@@ -2,10 +2,16 @@ package Experiment.Exp5;
 
 // 日光灯
 public class FluorescentLamp extends Lamp {
-    private String Type = "R";
+    private String type = "R";
 
-    FluorescentLamp(String type, String deviceName) {
-        super(type, deviceName);
+    FluorescentLamp(int number, String deviceName) {
+        super(deviceName);
+        this.number = number;
+    }
+
+    @Override
+    public void display() {
+        System.out.println("@" + this.type + this.number + ":" + (int) this.lightBrightness);
     }
 
     @Override
@@ -17,18 +23,14 @@ public class FluorescentLamp extends Lamp {
     }
 
     @Override
-    void print() {
-
-    }
-
-
-    @Override
-    public void run() {
+    public void run(double voltage) {
+        setVoltage(0, voltage);
+        setVoltage(1, 0);
         setLightBrightness();
+        display();
+        for (ElecticalAppliance child : this.children) {
+            child.run(getVoltage(0));
+        }
     }
 
-    @Override
-    public CircuitNode operate(String command, CircuitNode circuitNode) {
-        return null;
-    }
 }

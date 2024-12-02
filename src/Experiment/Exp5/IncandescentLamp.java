@@ -4,8 +4,14 @@ package Experiment.Exp5;
 public class IncandescentLamp extends Lamp {
     private String Type = "B";
 
-    IncandescentLamp(String type, String deviceName) {
-        super(type, deviceName);
+    IncandescentLamp(int number, String deviceName) {
+        super(deviceName);
+        this.number = number;
+    }
+
+    @Override
+    public void display() {
+        System.out.println("@" + this.Type + this.number + ":" + (int) this.lightBrightness);
     }
 
     @Override
@@ -14,25 +20,19 @@ public class IncandescentLamp extends Lamp {
             this.lightBrightness = 0;
         else if (this.getVoltageDiff() > 10 || this.getVoltageDiff() < 220) {
             this.lightBrightness = (this.getVoltageDiff() - 10) / (220 - 10) * (200 - 50) + 50;
-        }
-        else
+        } else
             this.lightBrightness = 200;
     }
 
     @Override
-    void print() {
-        System.out.println(Type+number); // TODO: 更改打印内容
-        System.out.println("LightBrightness: " + lightBrightness);
+    public void run(double voltage) {
+        setVoltage(0, voltage);
+        setVoltage(1, 0);
+        setLightBrightness();
+        display();
+        for (ElecticalAppliance child : this.children) {
+            child.run(getVoltage(0));
+        }
     }
 
-    @Override
-    public void run() {
-        this.setLightBrightness();
-    }
-
-    @Override
-    public CircuitNode operate(String command, CircuitNode circuitNode) {
-
-        return null;
-    }
 }

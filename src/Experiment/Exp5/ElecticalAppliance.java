@@ -3,16 +3,19 @@ package Experiment.Exp5;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-abstract public class ElecticalAppliance extends CircuitNode implements Operable {
+abstract public class ElecticalAppliance extends CircuitNode {
 
+    protected double R;
     protected int number;
     protected double[] voltage = new double[2];
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Date date = new Date();
 
-    ElecticalAppliance(String type, String deviceName) {
-        super(type, deviceName);
+    ElecticalAppliance(String deviceName) {
+        super(deviceName);
     }
+
+    public abstract void display();
 
     void log(String[] args) {
         for (int i = 0; i < args.length; i++) {
@@ -22,7 +25,7 @@ abstract public class ElecticalAppliance extends CircuitNode implements Operable
     }
 
     double getVoltageDiff() {
-        if (voltage[0] > voltage[1]) {
+        if (voltage[0] < voltage[1]) {
             String[] args = new String[1];
             args[0] = "Wrong!: The voltage might set error";
             this.log(args);
@@ -53,5 +56,5 @@ abstract public class ElecticalAppliance extends CircuitNode implements Operable
         this.voltage[num] = 0;
     }
 
-    public abstract void run();
+    public abstract void run(double voltage);
 }

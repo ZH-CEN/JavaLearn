@@ -1,9 +1,10 @@
 package Experiment.Exp5;
 
-public class Kaiguan extends Controller {
+public class Switch extends Controller {
     private char type = 'K';
-    Kaiguan(String deviceName) {
+    Switch(int number, String deviceName) {
         super(deviceName);
+        this.number = number;
     }
 
     @Override
