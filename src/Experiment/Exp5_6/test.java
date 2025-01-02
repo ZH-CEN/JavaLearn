@@ -1,4 +1,4 @@
-package Experiment.Exp5;
+package Experiment.Exp5_6;
 
 import org.junit.jupiter.api.Test;
 

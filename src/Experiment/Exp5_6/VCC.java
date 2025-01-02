@@ -1,4 +1,4 @@
-package Experiment.Exp5;
+package Experiment.Exp5_6;
 
 public class VCC extends ElecticalAppliance{
 
@@ -13,11 +13,9 @@ public class VCC extends ElecticalAppliance{
     }
 
     @Override
-    public void run(double voltage) {
-        this.setVoltage(0, 0);
-        this.setVoltage(1, voltage);
-        for(ElecticalAppliance child : this.children){
-            child.run(this.getVoltage(1));
-        }
+    public void run(double in ,double out, double I) {
+        setVoltage(0, in);
+        setVoltage(1, out);
+        this.I = I;
     }
 }

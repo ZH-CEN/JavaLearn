@@ -1,12 +1,13 @@
-package Experiment.Exp5;
+package Experiment.Exp5_6;
 
 public class ContinuousRegulator extends Controller {
     private final char type = 'L';
-    private double rate;
 
     ContinuousRegulator(int number, String deviceName) {
         super(deviceName);
         this.number = number;
+        this.R = 0;
+        this.highestI = 18;
     }
 
     void setRate(double rate) {
@@ -17,25 +18,21 @@ public class ContinuousRegulator extends Controller {
             String[] args = {"非法输入，请输入0-1之间的数"};
             this.log(args);
         }
+        if (rate > 0) {
+            status = true;
+        }
     }
 
     @Override
     public void display() {
-        System.out.printf("@%c%d:%.2f%n", this.type, this.number, this.rate);
+        System.out.printf("@%c%d:%.2f", this.type, this.number, this.rate);
+        System.out.println(" " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ?  "exceeding current limit error": ""));
     }
 
     @Override
-    public void run(double voltage) {
-        setVoltage(0, voltage);
-//        System.out.println(this.rate);
-        setVoltage(1, getVoltage(0) * this.rate);
-        display();
-//        System.out.println(getVoltage(1));
-        if (this.rate != 0) {
-//            System.out.println("孩子结点：" + this.children.size());
-            for (ElecticalAppliance child : this.children) {
-                child.run(getVoltage(1));
-            }
-        }
+    public void run(double in, double out, double I) {
+        setVoltage(0, in);
+        setVoltage(1, out);
+        this.I = I;
     }
 }

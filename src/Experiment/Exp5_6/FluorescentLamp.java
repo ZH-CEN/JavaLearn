@@ -1,4 +1,4 @@
-package Experiment.Exp5;
+package Experiment.Exp5_6;
 
 // 日光灯
 public class FluorescentLamp extends Lamp {
@@ -7,15 +7,17 @@ public class FluorescentLamp extends Lamp {
     FluorescentLamp(int number, String deviceName) {
         super(deviceName);
         this.number = number;
+        this.R = 5; // 日光灯的电阻为5
+        this.highestI = 5;
     }
 
     @Override
     public void display() {
-        System.out.println("@" + this.type + this.number + ":" + (int) this.lightBrightness);
+        System.out.println("@" + this.type + this.number + ":" + (int) this.lightBrightness + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ? "exceeding current limit error" : ""));
     }
 
     @Override
-    void setLightBrightness() {
+    protected void setLightBrightness() {
         if (this.getVoltageDiff() > 0)
             this.lightBrightness = 180;
         else
@@ -23,14 +25,12 @@ public class FluorescentLamp extends Lamp {
     }
 
     @Override
-    public void run(double voltage) {
-        setVoltage(0, voltage);
-        setVoltage(1, 0);
+    public void run(double in, double out, double I) {
+        setVoltage(0, in);
+        setVoltage(1, out);
+        this.I = I;
         setLightBrightness();
-        display();
-        for (ElecticalAppliance child : this.children) {
-            child.run(getVoltage(0));
-        }
     }
+
 
 }

@@ -1,21 +1,22 @@
-package Experiment.Exp5;
+package Experiment.Exp5_6;
 
-//白炽灯
 public class IncandescentLamp extends Lamp {
     private String Type = "B";
 
     IncandescentLamp(int number, String deviceName) {
         super(deviceName);
         this.number = number;
+        this.R = 10; // 白炽灯的电阻为10
+        this.highestI =9;
     }
 
     @Override
     public void display() {
-        System.out.println("@" + this.Type + this.number + ":" + (int) this.lightBrightness);
+        System.out.println("@" + this.Type + this.number + ":" + (int) this.lightBrightness + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ?  "exceeding current limit error": ""));
     }
 
     @Override
-    void setLightBrightness() {
+    protected void setLightBrightness() {
         if (this.getVoltageDiff() < 10)
             this.lightBrightness = 0;
         else if (this.getVoltageDiff() > 10 || this.getVoltageDiff() < 220) {
@@ -25,14 +26,10 @@ public class IncandescentLamp extends Lamp {
     }
 
     @Override
-    public void run(double voltage) {
-        setVoltage(0, voltage);
-        setVoltage(1, 0);
+    public void run(double in, double out, double I) {
+        setVoltage(0, in);
+        setVoltage(1, out);
+        this.I = I;
         setLightBrightness();
-        display();
-        for (ElecticalAppliance child : this.children) {
-            child.run(getVoltage(0));
-        }
     }
-
 }

@@ -1,4 +1,4 @@
-package Experiment.Exp5;
+package Experiment.Exp5_6;
 
 public class SteppedRegulator extends Controller {
     private final char type = 'F';
@@ -7,12 +7,13 @@ public class SteppedRegulator extends Controller {
     SteppedRegulator(int number, String deviceName) {
         super(deviceName);
         this.number = number;
+        this.highestI = 18;
     }
 
     void setStep(int step) {
         this.step = step;
         if (step != 0)
-            this.status = true;
+            status = true;
     }
 
     void setStep(char ch) {
@@ -24,10 +25,15 @@ public class SteppedRegulator extends Controller {
             String[] args = {"非法输入，请输入+或-"};
             this.log(args);
         }
+        if (step > 0)
+            status = true;
     }
 
     void setOutVoltage(int out_id, double voltage) {
-        double rate;
+        this.voltages[out_id] = voltage * getRate();
+    }
+
+    double getRate() {
         switch (this.step) {
             case 0:
                 rate = 0;
@@ -44,23 +50,19 @@ public class SteppedRegulator extends Controller {
             default:
                 rate = 0;
         }
-        this.voltage[out_id] = voltage * rate;
+        return rate;
     }
 
     @Override
     public void display() {
-        System.out.println("@" + this.type + this.number + ":" + this.step);
+        System.out.println("@" + this.type + this.number + ":" + this.step + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ? "exceeding current limit error" : ""));
     }
 
     @Override
-    public void run(double voltage) {
-        setOutVoltage(1, voltage);
-        display();
-
-        if (this.step != 0) {
-            for (ElecticalAppliance child : this.children) {
-                child.run(getVoltage(1));
-            }
-        }
+    public void run(double in, double out, double I) {
+        setVoltage(0, in);
+        setVoltage(1, out);
+        this.I = I;
+        return;
     }
 }

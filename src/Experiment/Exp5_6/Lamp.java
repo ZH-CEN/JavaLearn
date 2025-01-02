@@ -1,12 +1,15 @@
-package Experiment.Exp5;
+package Experiment.Exp5_6;
 
-abstract public class Lamp extends ElecticalAppliance {
+public abstract class Lamp extends ElecticalAppliance {
     protected double lightBrightness;
 
     Lamp(String deviceName) {
         super(deviceName);
     }
 
-    abstract void setLightBrightness();
+    public double getLightBrightness() {
+        return this.lightBrightness;
+    }
 
+    protected abstract void setLightBrightness();
 }

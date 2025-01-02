@@ -1,25 +1,26 @@
-package Experiment.Exp5;
+package Experiment.Exp5_6;
 
 public class Switch extends Controller {
     private char type = 'K';
     Switch(int number, String deviceName) {
         super(deviceName);
         this.number = number;
+        this.highestI = 20;
+    }
+    Switch(){
+
     }
 
     @Override
     public void display() {
-        System.out.println("@" + this.type + ":" + (this.status ? "turned on" : "closed"));
+        System.out.println("@" + this.deviceName + ":" + (this.status ? "closed" : "turned on") + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + ( I > highestI ?  "exceeding current limit error": ""));
     }
 
     @Override
-    public void run(double voltage) {
-        display();
-        if(this.status){
-            for (ElecticalAppliance child : this.children) {
-                child.run(voltage);
-            }
-        }
+    public void run(double in ,double out, double I) {
+        setVoltage(0, in);
+        setVoltage(1, out);
+        this.I = I;
     }
 
 }
