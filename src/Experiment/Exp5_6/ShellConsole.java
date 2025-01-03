@@ -15,17 +15,17 @@ public class ShellConsole {
     // 启动控制台
     public void start() throws Exception {
         Scanner scanner = new Scanner(System.in);
-//        System.out.println("Welcome to Shell Console! Type 'end' to run.");
 
         while (true) {
-//            System.out.print("> "); // 提示符
             String input = scanner.nextLine().trim();
             // 退出命令
             if ("end".equalsIgnoreCase(input)) {
+                if (ShellConsole.mainCircuit.getResistance() == 0) {
+                    System.out.println("short circuit error"); // 短路错误
+                    return;
+                }
                 ShellConsole.mainCircuit.run(220, 0, -1);
                 display();
-
-//                System.out.println("Goodbye!");
                 break;
             }
 
@@ -39,9 +39,6 @@ public class ShellConsole {
             Command command = commands.get(commandName);
             if (command != null) {
                 command.execute(args);
-//                } catch (Exception e) {
-//                    System.err.println("Error: " + e.getMessage());
-//                }
             } else {
                 System.out.println("Command not found: " + commandName);
             }
@@ -61,7 +58,6 @@ public class ShellConsole {
 
         // 注册一些示例命令
         console.registerCommand("[", args1 -> {
-//            int lineflag = 0;
             ElecticalAppliance parent = null;
             for (String s : args1) {
                 if (s.equals("]")) {
@@ -131,7 +127,6 @@ public class ShellConsole {
                     注册串并联电路。
                      */
                 case 'T':
-//                    System.out.println("init");
                     console.devices.put(devicename, new SeriesCircuit(num, devicename));
                     serieslink(console, (SeriesCircuit) console.devices.get(devicename), s.substring(s.indexOf(':') + 1));
                     break;
@@ -182,42 +177,11 @@ public class ShellConsole {
         ArrayList<String> segments = parseString(args);
 
         for (String s : segments) {
-            // 解析当前操作对象
-
             String[] parts = s.split("-");
             String name = parts[0];
             int num = Integer.parseInt(name.substring(1));
             circuit.addAppliance(console.devices.get(name));
-//
-//            if (console.devices.get(name) == null) {
-//                //   若设备不存在,注册
-//                switch (s.charAt(0)) {
-//                    /*
-//                    串联电路注册::: 无需注册，因为能嵌套肯定已经注册了。
-//                     */
-//
-//                    /*
-//                    电器注册
-//                     */
-//                    case 'B':
-//                        console.devices.put(name, new IncandescentLamp(num, name));
-//                        circuit.addAppliance(console.devices.get(name));
-//                        break;
-//                    case 'R':
-//                        console.devices.put(name, new FluorescentLamp(num, name));
-//                        circuit.addAppliance(console.devices.get(name));
-//                        break;
-//                    case 'D':
-//                        console.devices.put(name, new CeilingFan(num, name));
-//                        circuit.addAppliance(console.devices.get(name));
-//                        break;
-//                    default:
-//                        System.out.println("Wrong Input!");
-//                        return;
-//                }
-//            } else {
-//            circuit.addAppliance(console.devices.get(name));
-//            }
+
         }
     }
 
@@ -226,12 +190,9 @@ public class ShellConsole {
         ElecticalAppliance parent = null;
         String parentname = null;
         for (String s : segments) {
-            // 解析当前操作对象
             int num;
             String[] parts = s.split("-");
             String name = parts[0];
-//            System.out.println(name);
-            // 避免无法取到数字编号.
             try {
                 num = Integer.parseInt(name.substring(1));
             } catch (NumberFormatException e) {
@@ -315,20 +276,24 @@ public class ShellConsole {
             if (parent == child) {
                 if (parent instanceof Mutexswitch) {
                     // 互斥开关的连接方式。
-                    if ((parentname.substring(parentname.indexOf('-') + 1).equals("1") && s.substring(s.indexOf('-') + 1).equals("2")) || (parentname.substring(parentname.indexOf('-') + 1).equals("2") && s.substring(s.indexOf('-') + 1).equals("1")))
-                        circuit.addAppliance(((Mutexswitch) parent).init(2));
-                    else if ((parentname.substring(parentname.indexOf('-') + 1).equals("1") && s.substring(s.indexOf('-') + 1).equals("3")) || (parentname.substring(parentname.indexOf('-') + 1).equals("3") && s.substring(s.indexOf('-') + 1).equals("1")))
-                        circuit.addAppliance(((Mutexswitch) parent).init(3));
-                }else if(parent instanceof Diode){
+                    if (parentname.substring(parentname.indexOf('-') + 1).equals("1") && s.substring(s.indexOf('-') + 1).equals("2"))
+                        circuit.addAppliance(((Mutexswitch) parent).init(2,true));
+                    else if(parentname.substring(parentname.indexOf('-') + 1).equals("2") && s.substring(s.indexOf('-') + 1).equals("1"))
+                        circuit.addAppliance(((Mutexswitch) parent).init(2,false));
+                    else if (parentname.substring(parentname.indexOf('-') + 1).equals("1") && s.substring(s.indexOf('-') + 1).equals("3"))
+                        circuit.addAppliance(((Mutexswitch) parent).init(3,true));
+                    else if(parentname.substring(parentname.indexOf('-') + 1).equals("3") && s.substring(s.indexOf('-') + 1).equals("1"))
+                        circuit.addAppliance(((Mutexswitch) parent).init(3,false));
+
+                } else if (parent instanceof Diode) {
                     // 二极管的连接方式。
-                    circuit.addAppliance(((Diode)child));
-                    if(parentname.substring(parentname.indexOf('-') + 1).equals("1") && s.substring(s.indexOf('-') + 1).equals("2")){
+                    circuit.addAppliance(((Diode) child));
+                    if (parentname.substring(parentname.indexOf('-') + 1).equals("1") && s.substring(s.indexOf('-') + 1).equals("2")) {
                         ((Diode) child).setStatus(true);
-                    }else{
+                    } else {
                         ((Diode) child).setStatus(false);
                     }
-                }
-                else {
+                } else {
                     circuit.addAppliance(child);
                 }
                 parent = null;
@@ -351,11 +316,10 @@ public class ShellConsole {
     }
 
     public void display() {
-        String[] str = {"K", "F", "L", "B", "R", "D", "A", "H", "S"};
+        String[] str = {"K", "F", "L", "B", "R", "D", "A", "H", "S", "P"};
         for (String s : str) {
             for (int i = 1; i < devices.size() + 1; i++) {
                 try {
-//                    System.out.println(s+i);
                     devices.get(s + i).display();
                 } catch (NullPointerException e) {
                     continue;
