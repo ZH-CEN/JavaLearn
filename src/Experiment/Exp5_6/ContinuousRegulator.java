@@ -26,13 +26,8 @@ public class ContinuousRegulator extends Controller {
     @Override
     public void display() {
         System.out.printf("@%c%d:%.2f", this.type, this.number, this.rate);
-        System.out.println(" " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ?  "exceeding current limit error": ""));
+        System.out.println(" " + Math.round(this.voltages[0]) + "-" + Math.round(this.voltages[1]) + " " + (I > highestI ?  "exceeding current limit error": ""));
     }
 
-    @Override
-    public void run(double in, double out, double I) {
-        setVoltage(0, in);
-        setVoltage(1, out);
-        this.I = I;
-    }
+
 }

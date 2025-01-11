@@ -12,7 +12,8 @@ public class Curtain extends ElecticalAppliance {
     }
 
     public void display() {
-        System.out.println("@" + this.type + this.number + ": " + (int)(this.openRatio * 100) + "% " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ?  "exceeding current limit error": ""));
+        dynamicOpenRatio();
+        System.out.println("@" + this.type + this.number + ": " + Math.round(this.openRatio * 100) + "% " + Math.round(this.voltages[0]) + "-" + Math.round(this.voltages[1]) + " " + (I > highestI ?  "exceeding current limit error": ""));
     }
 
     public void setOpenRatio(double totalLightIntensity) {
@@ -37,7 +38,17 @@ public class Curtain extends ElecticalAppliance {
     public void run(double in, double out, double I) {
         setVoltage(0, in);
         setVoltage(1, out);
-        this.I = I;        double totalLightIntensity = 0;
+        this.I = I;
+        dynamicOpenRatio();
+    }
+
+    @Override
+    public void run() {
+        dynamicOpenRatio();
+    }
+
+    private void dynamicOpenRatio() {
+        double totalLightIntensity = 0;
         for (ElecticalAppliance appliance : ShellConsole.devices.values()) {
             if (appliance instanceof Lamp) {
                 totalLightIntensity += ((Lamp) appliance).getLightBrightness();

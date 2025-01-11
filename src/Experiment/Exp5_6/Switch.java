@@ -13,14 +13,6 @@ public class Switch extends Controller {
 
     @Override
     public void display() {
-        System.out.println("@" + this.deviceName + ":" + (this.status ? "closed" : "turned on") + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + ( I > highestI ?  "exceeding current limit error": ""));
+        System.out.println("@" + this.deviceName + ":" + (this.status ? "closed" : "turned on") + " " + Math.round(this.voltages[0]) + "-" + Math.round(this.voltages[1]) + " " + ( I > highestI ?  "exceeding current limit error": ""));
     }
-
-    @Override
-    public void run(double in ,double out, double I) {
-        setVoltage(0, in);
-        setVoltage(1, out);
-        this.I = I;
-    }
-
 }

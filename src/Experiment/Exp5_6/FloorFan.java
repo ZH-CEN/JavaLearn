@@ -12,7 +12,7 @@ public class FloorFan extends ElecticalAppliance {
     }
 
     public void display() {
-        System.out.println("@" + this.type + this.number + ":" + (int) this.rate + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ? "exceeding current limit error" : ""));
+        System.out.println("@" + this.type + this.number + ":" + Math.round(this.rate) + " " + Math.round(this.voltages[0]) + "-" + Math.round(this.voltages[1]) + " " + (I > highestI ? "exceeding current limit error" : ""));
     }
 
     void setRate() {
@@ -38,5 +38,8 @@ public class FloorFan extends ElecticalAppliance {
         this.I = I;
         setRate(); // 设置转速, 使本设备运行
     }
-
+    @Override
+    public void run() {
+        setRate(); // 设置转速, 使本设备运行
+    }
 }

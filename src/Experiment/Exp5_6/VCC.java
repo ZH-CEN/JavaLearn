@@ -18,4 +18,9 @@ public class VCC extends ElecticalAppliance{
         setVoltage(1, out);
         this.I = I;
     }
+
+    @Override
+    public void run() {
+
+    }
 }

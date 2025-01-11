@@ -55,14 +55,6 @@ public class SteppedRegulator extends Controller {
 
     @Override
     public void display() {
-        System.out.println("@" + this.type + this.number + ":" + this.step + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ? "exceeding current limit error" : ""));
-    }
-
-    @Override
-    public void run(double in, double out, double I) {
-        setVoltage(0, in);
-        setVoltage(1, out);
-        this.I = I;
-        return;
+        System.out.println("@" + this.type + this.number + ":" + this.step + " " + Math.round(this.voltages[0]) + "-" + Math.round(this.voltages[1]) + " " + (I > highestI ? "exceeding current limit error" : ""));
     }
 }

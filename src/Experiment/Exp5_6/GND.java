@@ -18,4 +18,9 @@ public class GND extends ElecticalAppliance {
         setVoltage(1, out);
         this.I = I;
     }
+
+    @Override
+    public void run() {
+
+    }
 }

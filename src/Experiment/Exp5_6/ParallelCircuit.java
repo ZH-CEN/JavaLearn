@@ -23,10 +23,7 @@ public class ParallelCircuit extends ElecticalAppliance {
 
     @Override
     public void display() {
-        System.out.println("@" + this.deviceName + ":" + (int) this.voltages[0] + "-" + (int) this.voltages[1]);
-        for (ElecticalAppliance appliance : appliances) {
-            appliance.display();
-        }
+        System.out.println("@" + this.deviceName + ":" + Math.round(this.voltages[0]) + "-" + Math.round(this.voltages[1]));
     }
 
     public boolean iscut() {
@@ -36,7 +33,7 @@ public class ParallelCircuit extends ElecticalAppliance {
     }
 
     @Override
-    public double getResistance() {
+    public double getResistance() { // 负责短路和断路解析， R = -1 代表断路， R = 0 代表短路
         double totalResistance = 0;
         boolean flag = false;
         for (ElecticalAppliance appliance : appliances) {
@@ -45,6 +42,9 @@ public class ParallelCircuit extends ElecticalAppliance {
                 continue;
             }
 //            System.out.println(appliance.deviceName + " " + appliance.getResistance());
+            if(appliance.getResistance() == 0){ // 短路
+                return 0;
+            }
             totalResistance += 1 / appliance.getResistance();
         }
         if(totalResistance == 0 && flag){
@@ -58,24 +58,33 @@ public class ParallelCircuit extends ElecticalAppliance {
         setVoltage(0, in);
         setVoltage(1, out);
         this.I = I;
-//        System.out.println("@" + this.deviceName + ":" + (int) this.voltages[0] + "-" + (int) this.voltages[1]);
+        run();
+    }
 
-        // Check for open circuit
-        if (iscut() || (in == 0 && out == 0)) {
-            System.out.println("@" + this.deviceName + "断路!");
-//            for (ElecticalAppliance appliance : appliances) {
-//                appliance.setVoltage(0, 0);
-//                appliance.setVoltage(1, 0);
-//            }
+    @Override
+    public void run() {
+        double in = this.getVoltage(0); // 获取输入电压
+        double out = this.getVoltage(1); // 获取输出电压
+        double I = this.I; // 获取电流
+
+        if(in == out){ // 如果输入电压等于输出电压
+            for (ElecticalAppliance appliance : appliances) {
+                if (!appliance.iscut()) { // 如果电器没有断路
+                    appliance.run(in, out, -1); // 运行电器，电流为-1
+                }
+                else
+                    appliance.run(in, out, 0); // 运行电器，电流为0
+            }
             return;
         }
-        // Run each appliance with the same input and output voltage
+
+        // 以相同的输入和输出电压运行每个电器
         for (ElecticalAppliance appliance : appliances) {
-            if (!appliance.iscut()) {
-                appliance.run(in, out, -1);
+            if (!appliance.iscut()) { // 如果电器没有断路
+                appliance.run(in, out, -1); // 运行电器，电流为-1
             }
             else
-                appliance.setVoltage(0,in);
+                appliance.run(in, 0, 0); // 运行电器，电流为0
         }
     }
 }

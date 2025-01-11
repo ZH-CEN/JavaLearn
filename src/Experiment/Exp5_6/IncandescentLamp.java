@@ -12,7 +12,7 @@ public class IncandescentLamp extends Lamp {
 
     @Override
     public void display() {
-        System.out.println("@" + this.Type + this.number + ":" + (int) this.lightBrightness + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ?  "exceeding current limit error": ""));
+        System.out.println("@" + this.Type + this.number + ":" + Math.round(this.lightBrightness) + " " + Math.round(this.voltages[0]) + "-" + Math.round(this.voltages[1]) + " " + (I > highestI ? "exceeding current limit error" : ""));
     }
 
     @Override
@@ -30,6 +30,10 @@ public class IncandescentLamp extends Lamp {
         setVoltage(0, in);
         setVoltage(1, out);
         this.I = I;
+        run();
+    }
+    @Override
+    public void run() {
         setLightBrightness();
     }
 }

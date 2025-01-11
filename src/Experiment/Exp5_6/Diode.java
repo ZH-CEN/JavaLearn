@@ -14,18 +14,16 @@ public class Diode extends Controller {
 
     @Override
     public void display() {
-        System.out.println("@" + this.deviceName + ":" + (this.status ? "conduction" : "cutoff") + " " + (int) this.voltages[0] + "-" + (int) this.voltages[1] + " " + (I > highestI ? "exceeding current limit error" : ""));
+        System.out.println("@" + this.deviceName + ":" + (this.status ? "conduction" : "cutoff") + " " + Math.round(this.voltages[0]) + "-" + Math.round(this.voltages[1]) + " " + (I > highestI ? "exceeding current limit error" : ""));
     }
 
     void setStatus(boolean status) {
         this.status = status;
-    }
-
-    @Override
-    public void run(double in, double out, double I) {
-        setVoltage(0, in);
-        setVoltage(1, out);
-        this.I = I;
+        if(!status){
+            double temp = this.voltages[0];
+            this.voltages[0] = this.voltages[1];
+            this.voltages[1] = temp;
+        }
     }
 
 }

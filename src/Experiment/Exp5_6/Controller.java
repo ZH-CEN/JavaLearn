@@ -15,6 +15,15 @@ public abstract class Controller extends ElecticalAppliance{
         this.status = !this.status;
     }
 
+    @Override
+    public double getResistance() {
+        if (status) {
+            return this.R;
+        } else {
+            return -1;
+        }
+    }
+
     double getRate(){
         return rate;
     }
@@ -24,5 +33,8 @@ public abstract class Controller extends ElecticalAppliance{
         setVoltage(0, in);
         setVoltage(1, out);
         this.I = I;
+    }
+    @Override
+    public void run() {
     }
 }
